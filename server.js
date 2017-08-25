@@ -1,28 +1,28 @@
-var http = require('http'), 
-    fs = require('fs'), 
+var http = require('http'),
+    fs = require('fs'),
     url = require('url'),
     port = 8080,
-    szListing = '/listings';
+    szListing = '/listings',
+    szGetRequest = 'GET';
 
 /* Global variables */
 var listingData, server;
 
 var requestHandler = function(request, response) {
-  var parsedUrl = url.parse(request.url);
-
+  
   /*
-    Your request handler should send listingData in the JSON format if a GET request 
-    is sent to the '/listings' path. Otherwise, it should send a 404 error. 
+    Your request handler should send listingData in the JSON format if a GET request
+    is sent to the '/listings' path. Otherwise, it should send a 404 error.
 
-    HINT: explore the request object and its properties 
+    HINT: explore the request object and its properties
     http://stackoverflow.com/questions/17251553/nodejs-request-object-documentation
    */
 
-   if(request.url === szListing) {
+   if((request.url === szListing) && (request.method === szGetRequest)) {
      response.writeHead(200, {
      'Content-Length': Buffer.byteLength(listingData),
-     'Content-Type': 'text/json' });
-     
+     'Content-Type': 'application/json' });
+
      response.end(listingData, 'utf-8');
    } else {
      response.statusCode = 404;
@@ -32,8 +32,8 @@ var requestHandler = function(request, response) {
 
 fs.readFile('listings.json', 'utf-8', function(err, data) {
   /*
-    This callback function should save the data in the listingData variable, 
-    then start the server. 
+    This callback function should save the data in the listingData variable,
+    then start the server.
    */
 
    listingData = new Buffer(data, 'utf-8');
